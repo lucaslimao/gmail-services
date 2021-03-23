@@ -22,6 +22,12 @@ const { message } = require('../src')
 
 ## Overview
 
+### Response body
+If successful, the response body contains data with the same structure on the gmail [documentation](https://developers.google.com/gmail/api/reference/rest/v1/users.messages#resource:-message).
+
+But in the Part body, we add the attachment, if the part has a attachment.
+The attachment structure is the same on the gmail [documentation](https://developers.google.com/gmail/api/reference/rest/v1/users.messages.attachments#resource:-messagepartbody)
+
 ### Query functions
 
 ##### from
