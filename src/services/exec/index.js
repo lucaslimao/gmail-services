@@ -23,15 +23,6 @@ const parts = async (messageId, payload) => {
         const partPromise = payload.parts.map(
             async part => {
 
-                if (part.body.size > 0 && part.body.data) {
-
-                    const buffer = Buffer.from(part.body.data, 'base64')
-                    const text = buffer.toString()
-
-                    part.body.content = text
-
-                }
-
                 if (part.body.size > 0 && part.filename !== '') {
 
                     logger.info(`${logPrefix} :: ${part.filename}`)
