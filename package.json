@@ -1,6 +1,6 @@
 {
-  "name": "gmail-wrapper-services",
-  "version": "0.0.4",
+  "name": "gmail-query-services",
+  "version": "0.0.1",
   "description": "",
   "main": "src/index.js",
   "scripts": {

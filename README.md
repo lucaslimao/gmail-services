@@ -1,4 +1,4 @@
-## :package: gmail-wrapper-services
+## :mailbox_with_no_mail: gmail-wrapper-services
 #### lib to facilitate integration with gmail
 
 ### Prerequisites
