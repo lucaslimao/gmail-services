@@ -14,7 +14,7 @@ let gmail = null
 
 const logPrefix = 'EXEC'
 
-const attachment = async (messageId, payload) => {
+const parts = async (messageId, payload) => {
 
     try {
 
@@ -23,7 +23,16 @@ const attachment = async (messageId, payload) => {
         const partPromise = payload.parts.map(
             async part => {
 
-                if (part.filename !== '') {
+                if (part.body.size > 0 && part.body.data) {
+
+                    const buffer = Buffer.from(part.body.data, 'base64')
+                    const text = buffer.toString()
+
+                    part.body.content = text
+
+                }
+
+                if (part.body.size > 0 && part.filename !== '') {
 
                     logger.info(`${logPrefix} :: ${part.filename}`)
 
@@ -75,13 +84,11 @@ const exec = async (query, hasAttachment) => {
 
                 logger.info(`${logPrefix} :: message :: ${message.id}`)
 
-                const { data } = await gmail.users.messages.get({ id: message.id, userId: 'me' })
+                const { data } = await gmail.users.messages.get({ id: message.id, userId: 'me', format: 'FULL' })
 
                 let payload = data.payload
 
-                if (hasAttachment) {
-                    payload = await attachment(message.id, payload)
-                }
+                payload = await parts(message.id, payload)
 
                 return { ...message, ...payload }
 
