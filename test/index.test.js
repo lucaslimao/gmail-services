@@ -22,4 +22,14 @@ describe('Querys', async () => {
 
     })
 
-})
+    it('should return status 200', async function () {
+
+        this.timeout(30000)
+
+        const messages = await message().from(email).subject(subject).hasAttachment().exec()
+
+        expect(messages.status).to.equal(200)
+
+    })
+
+}, 30000)

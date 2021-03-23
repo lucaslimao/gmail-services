@@ -92,10 +92,21 @@ const exec = async (query, hasAttachment) => {
 
         logger.info(`${logPrefix} :: query :: success`)
 
-        return { messages: messages, ...data }
+        return {
+            status: 200,
+            ...data,
+            messages: messages
+        }
 
     } catch (error) {
+
         logger.error(error, `${logPrefix} :: Error when trying to run query`)
+
+        return { 
+            status: 500,
+            error: error
+        }
+
     }
     
 }
