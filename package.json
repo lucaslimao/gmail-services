@@ -1,0 +1,35 @@
+{
+  "name": "gmail-services",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucaslimao/gmail-services.git"
+  },
+  "keywords": [
+    "gmail",
+    "node",
+    "nodejs",
+    "email"
+  ],
+  "author": "Lucas Limao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucaslimao/gmail-services/issues"
+  },
+  "homepage": "https://github.com/lucaslimao/gmail-services#readme",
+  "dependencies": {
+    "config": "^3.3.6",
+    "googleapis": "^39.2.0",
+    "pino": "^6.11.2",
+    "pino-pretty": "^4.7.1"
+  },
+  "devDependencies": {
+    "chai": "4.2.0",
+    "mocha": "8.1.3"
+  }
+}
