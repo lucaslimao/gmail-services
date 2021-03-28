@@ -1,14 +1,11 @@
-const config = require('config')
+const fs = require('fs')
 
 const { google } = require('googleapis')
 const logger = require('../../utils')
 
-const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+const TOKEN_PATH = 'config/token.json'
 
-const client_id = config.get('client_id')
-const client_secret = config.get('client_secret')
-const redirect_uri = config.get('redirect_uri')
-const refresh_token = config.get('refresh_token')
+const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 let gmail = null
 
@@ -54,13 +51,17 @@ const exec = async (query, hasAttachment) => {
 
         logger.info(`${logPrefix} :: query :: ${query}`)
 
-        const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uri)
+        const content = await fs.readFileSync('config/credentials.json')
+    
+        const credentials = JSON.parse(content)
+    
+        const { client_secret, client_id, redirect_uris } = credentials.installed
+    
+        const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0])
 
-        const auth = {
-            refresh_token: refresh_token
-        }
-        
-        oAuth2Client.setCredentials(auth)
+        const token = await fs.readFileSync(TOKEN_PATH)
+
+        oAuth2Client.setCredentials(JSON.parse(token))
 
         gmail = google.gmail({ version: 'v1', auth: oAuth2Client })
 

@@ -8,7 +8,7 @@
 
 [Turn on the Gmail API](https://developers.google.com/gmail/api/quickstart/nodejs#step_1_turn_on_the)
 
-In resulting dialog click **DOWNLOAD CLIENT CONFIGURATION** and save the file credentials.json to your app config directory. 
+In resulting dialog click **DOWNLOAD CLIENT CONFIGURATION** and save the file credentials.json to app config directory. 
 
 ## Installation
 ```javascript
@@ -17,7 +17,20 @@ npm i gmail-query-services
 
 ## Importing
 ```javascript
-const { message } = require('../src')
+const { authorizer, message } = require('../src')
+```
+
+## Authorizer
+In the first time, you need run the authorizer first, to generate the token file.
+Run authorizer, get the uri that service return in console, put in you browser, get the code retunr by gmail.
+Put de code in console, press enter.
+Should apear a message, "Token stored to...".
+
+That's all.
+
+```javascript
+const { authorizer } = require('../src')
+authorizer.exec()
 ```
 
 ## Overview

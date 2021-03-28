@@ -1,6 +1,6 @@
 {
   "name": "gmail-query-services",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/lucaslimao/gmail-services#readme",
   "dependencies": {
-    "config": "3.3.6",
     "googleapis": "39.2.0",
     "pino": "6.11.2",
     "pino-pretty": "4.7.1"

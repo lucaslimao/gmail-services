@@ -11,7 +11,7 @@ chai.config.includeStack = true
 
 describe('Querys', async () => {
 
-    let email = 'felipe.inoue@intelligir.com.br'
+    let email = 'webjur@webjur.com.br'
     let subject = '(Arquivo Publicações)'
 
     it('should build query with from, subject and attachment', async () => {
