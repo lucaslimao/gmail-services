@@ -5,8 +5,6 @@ const logger = require('../../utils')
 
 const TOKEN_PATH = 'config/token.json'
 
-const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-
 let gmail = null
 
 const logPrefix = 'EXEC'
@@ -45,7 +43,7 @@ const parts = async (messageId, payload) => {
 
 }
 
-const exec = async (query, hasAttachment) => {
+const exec = async (query, hasAttachment, setRead, remove) => {
 
     try {
 
@@ -74,13 +72,31 @@ const exec = async (query, hasAttachment) => {
         const messagePromise = messages.map(
             async message => {
 
-                logger.info(`${logPrefix} :: message :: ${message.id}`)
+                let payload = {}
 
-                const { data } = await gmail.users.messages.get({ id: message.id, userId: 'me', format: 'FULL' })
+                try {
 
-                let payload = data.payload
+                    logger.info(`${logPrefix} :: message :: ${message.id}`)
 
-                payload = await parts(message.id, payload)
+                    const { data } = await gmail.users.messages.get({ id: message.id, userId: 'me', format: 'FULL' })
+
+                    payload = data.payload
+
+                    payload = await parts(message.id, payload)
+
+                    if (setRead) {
+                        logger.info(`${logPrefix} :: mark as read`)
+                        await gmail.users.messages.modify({ auth: oAuth2Client, id: message.id, userId: 'me', removeLabelIds: 'UNREAD' })
+                    }
+
+                    if (remove) {
+                        logger.info(`${logPrefix} :: delete email`)
+                        await gmail.users.messages.delete({ id: message.id, userId: 'me' })
+                    }
+
+                } catch (error) {
+                    logger.error(error, `${logPrefix} :: Error when trying read the email`)
+                }
 
                 return { ...message, ...payload }
 

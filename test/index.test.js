@@ -26,7 +26,20 @@ describe('Querys', async () => {
 
         this.timeout(30000)
 
-        const messages = await message().from(email).subject(subject).hasAttachment().exec()
+        const messages = await message().from(email).subject(subject).after('2021/04/07').before('2021/04/08').hasAttachment().exec()
+
+        expect(messages.status).to.equal(200)
+
+    })
+
+    it('should delete the email and return status 200', async function () {
+
+        this.timeout(30000)
+
+        const setReadEmail = true
+        const removeEmail = true
+
+        const messages = await message().from(email).subject(subject).after('2021/04/07').before('2021/04/08').hasAttachment().exec(setReadEmail, removeEmail)
 
         expect(messages.status).to.equal(200)
 

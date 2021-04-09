@@ -63,9 +63,9 @@ const modules = query => {
         hasAttachment: hasAttachment(query),
         after: after(query),
         before: before(query),
-        exec: async () => {
+        exec: async (setRead = true, remove = false) => {
             query = query.trim()
-            return await exec(query, _hasAttachment)
+            return await exec(query, _hasAttachment, setRead, remove)
         },
         inspect: () => {
             query = query.trim()
