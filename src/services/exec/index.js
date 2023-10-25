@@ -111,7 +111,7 @@ const exec = async (query, hasAttachment, setRead, remove) => {
 
         messages = await Promise.all(messagePromise)
 
-        if (setRead) {
+        if (setRead && emailsToModify.length > 0) {
 
             logger.info(`${logPrefix} :: mark as read`)
             const requestBody = { 
@@ -124,7 +124,7 @@ const exec = async (query, hasAttachment, setRead, remove) => {
 
         }
 
-        if (remove) {
+        if (remove && emailsToDelete.length > 0) {
             
             logger.info(`${logPrefix} :: delete email`)
             const requestBody = { 
