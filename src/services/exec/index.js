@@ -3,7 +3,13 @@ const fs = require('fs')
 const { google } = require('googleapis')
 const logger = require('../../utils')
 
-const TOKEN_PATH = 'config/token.json'
+const env = process.env
+
+const TOKEN_PATH = env.TOKEN_PATH
+const CREDENTIALS_PATH = env.CREDENTIALS_PATH
+
+let TIMEOUT = env.TIMEOUT || 5000 
+TIMEOUT = isNaN(env.TIMEOUT) ? Number(env.TIMEOUT) : env.TIMEOUT
 
 let gmail = null
 
@@ -49,7 +55,7 @@ const exec = async (query, hasAttachment, setRead, remove) => {
 
         logger.info(`${logPrefix} :: query :: ${query}`)
 
-        const content = await fs.readFileSync('config/credentials.json')
+        const content = await fs.readFileSync(CREDENTIALS_PATH)
     
         const credentials = JSON.parse(content)
     
@@ -61,11 +67,13 @@ const exec = async (query, hasAttachment, setRead, remove) => {
 
         oAuth2Client.setCredentials(JSON.parse(token))
 
-        gmail = google.gmail({ version: 'v1', auth: oAuth2Client })
+        gmail = google.gmail({ version: 'v1', auth: oAuth2Client, timeout: TIMEOUT })
 
         const { data } = await gmail.users.messages.list({ userId: 'me', labelIds: 'INBOX', q: query })
 
         let messages = []
+        let emailsToModify = []
+        let emailsToDelete = []
         
         if (data.resultSizeEstimate > 0) messages = data.messages
 
@@ -85,13 +93,11 @@ const exec = async (query, hasAttachment, setRead, remove) => {
                     payload = await parts(message.id, payload)
 
                     if (setRead) {
-                        logger.info(`${logPrefix} :: mark as read`)
-                        await gmail.users.messages.modify({ auth: oAuth2Client, id: message.id, userId: 'me', removeLabelIds: 'UNREAD' })
+                        emailsToModify = [...emailsToModify, message.id]
                     }
 
                     if (remove) {
-                        logger.info(`${logPrefix} :: delete email`)
-                        await gmail.users.messages.delete({ id: message.id, userId: 'me' })
+                        emailsToDelete = [...emailsToDelete, message.id]
                     }
 
                 } catch (error) {
@@ -104,6 +110,30 @@ const exec = async (query, hasAttachment, setRead, remove) => {
         )
 
         messages = await Promise.all(messagePromise)
+
+        if (setRead) {
+
+            logger.info(`${logPrefix} :: mark as read`)
+            const requestBody = { 
+                ids: emailsToModify, 
+                removeLabelIds: ['UNREAD'], 
+                addLabelIds: [] 
+            }
+
+            await gmail.users.messages.batchModify({ auth: oAuth2Client, userId: 'me', requestBody })
+
+        }
+
+        if (remove) {
+            
+            logger.info(`${logPrefix} :: delete email`)
+            const requestBody = { 
+                ids: emailsToDelete
+            }
+
+            await gmail.users.messages.batchDelete({ auth: oAuth2Client, userId: 'me', requestBody })
+
+        }
 
         logger.info(`${logPrefix} :: query :: success`)
 

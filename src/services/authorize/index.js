@@ -4,11 +4,14 @@ const { google } = require('googleapis')
 
 const SCOPES = ['https://mail.google.com/', 'https://www.googleapis.com/auth/gmail.modify', 'https://www.googleapis.com/auth/gmail.labels']
 
-const TOKEN_PATH = 'config/token.json'
+const env = process.env
+
+const TOKEN_PATH = env.TOKEN_PATH
+const CREDENTIALS_PATH = env.CREDENTIALS_PATH
 
 const exec = () => {
 
-    fs.readFile('config/credentials.json', (err, content) => {
+    fs.readFile(CREDENTIALS_PATH, (err, content) => {
 
         if (err) return console.log('Error loading client secret file:', err)
 

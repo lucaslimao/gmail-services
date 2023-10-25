@@ -15,6 +15,11 @@ In resulting dialog click **DOWNLOAD CLIENT CONFIGURATION** and save the file cr
 npm i gmail-query-services
 ```
 
+## envs
+env.TOKEN_PATH => the path of the gmail token
+env.CREDENTIALS_PATH => the path of the gmail credentials 
+env.TIMEOUT => timeout for Google apis to respond. (default => 5 seconds)
+
 ## Importing
 ```javascript
 const { authorizer, message } = require('../src')
@@ -58,6 +63,12 @@ await message().subject(subject).exec()
 await message().from(email).hasAttachment().exec()
 ```
 
+If you are looking for a file name
+
+```javascript
+await message().from(email).hasAttachment('filename').exec()
+```
+
 ##### after
 ```javascript
 await message().from(email).after(date).exec()
@@ -66,4 +77,25 @@ await message().from(email).after(date).exec()
 ##### before
 ```javascript
 await message().from(email).before(date).exec()
+```
+
+#### Date Warning
+All dates used in the search query are interpreted as midnight on that date in the PST timezone. To specify accurate dates for other timezones pass the value in seconds instead:
+```javascript
+?q=in:sent after:1388552400 before:1391230800
+```
+
+##### read
+```javascript
+await message().from(email).read().exec()
+```
+
+##### unread
+```javascript
+await message().from(email).read(false).exec()
+```
+
+##### contains
+```javascript
+await message().from(email).contains('hello').exec()
 ```

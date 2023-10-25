@@ -42,11 +42,31 @@ const before = query => value => {
 
 }
 
-const hasAttachment = query => () => {
+const hasAttachment = query => value => {
 
     _hasAttachment = true
     query = `${query} has:attachment`
 
+    if (value) {
+        query = `${query} filename:${value}`
+    }
+
+    return modules(query)
+
+}
+
+const read = query => (value = true) => {
+
+    const readValue = value ? 'read' : 'unread'
+    query = `${query} is:${readValue}`
+
+    return modules(query)
+
+}
+
+const contains = query => value => {
+
+    query = `${query} ${value}`
     return modules(query)
 
 }
@@ -63,9 +83,13 @@ const modules = query => {
         hasAttachment: hasAttachment(query),
         after: after(query),
         before: before(query),
+        read: read(query),
+        contains: contains(query),
         exec: async (setRead = true, remove = false) => {
+
             query = query.trim()
             return await exec(query, _hasAttachment, setRead, remove)
+
         },
         inspect: () => {
             query = query.trim()

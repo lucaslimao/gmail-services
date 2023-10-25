@@ -1,6 +1,11 @@
-const pino = require('pino')
-const logger = pino({
-    prettyPrint: true
-})
+
+const logger = {
+    info: (message) => {
+        console.log(message)
+    },
+    error: (error, message) => {
+        console.log(error)
+    }
+}
 
 module.exports = logger
